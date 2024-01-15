@@ -25,7 +25,11 @@ emojis = {
 
 def clima_estado(city):
     try:
+<<<<<<< HEAD
         API_KEY = "ab579498b7ef0e29244aadf8ddf129e5" # informe sua key de api do openweather
+=======
+        API_KEY = "" # informe sua key de api do openweather
+>>>>>>> origin/main
         cidade = city
         link = f"https://api.openweathermap.org/data/2.5/weather?q={cidade}&appid={API_KEY}&lang=pt_br"
         # print(link)

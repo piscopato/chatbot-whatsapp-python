@@ -6,6 +6,10 @@ Antes de iniciar é necessário baixar :
 3- lib openai
 4- pynput
 
+APIs usadas:
+https://platform.openai.com/apps
+https://openweathermap.org/api
+
 versão utilizada do python: 3.12
 
 1- Após iniciar o código será exibida uma janela do webdriver do google chrome mas você pode alterar para o navegador que desejar.

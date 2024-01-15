@@ -1,7 +1,11 @@
 import openai
 from datetime import datetime
 
+<<<<<<< HEAD
 openai.api_key = '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'  # informe sua key de api do chatgpt
+=======
+openai.api_key = ''  # informe sua key de api do chatgpt
+>>>>>>> origin/main
 
 
 def gerar_resposta(question):
