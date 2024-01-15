@@ -10,6 +10,18 @@ APIs usadas:
 https://platform.openai.com/apps
 https://openweathermap.org/api
 
+Menu de ajuda do chatbot:
+!q - respondo qualquer pergunta que você quiser 
+!oi - respondo com (Olá, como posso ajudar?)
+!hora - respondo com dia e a hora exata
+!clima cidade - respondo com algumas informações sobre o clima
+!loto Escolha APENAS 1 (LOTOFÁCIL) OU 2(MEGASENA) / Quantidade de jogos (exemplo !loto 5 2) - sorteios números para sua aposta
+!discord - informo meu discord oficial 
+!sticker - transforma *IMAGENS* em figurinhas
+!mp4 link - baixa qualquer video do youtube na maior qualidade
+!mp3 link - baixa somente o audio de qualquer video do youtube
+!conselho - te da um conselho aleatório
+
 versão utilizada do python: 3.12
 
 1- Após iniciar o código será exibida uma janela do webdriver do google chrome mas você pode alterar para o navegador que desejar.
