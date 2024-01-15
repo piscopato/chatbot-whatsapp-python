@@ -1,5 +1,5 @@
 from random import randint
-from time import sleep
+
 
 
 def sortear(apostas, quantidade):
@@ -39,12 +39,13 @@ def sortear(apostas, quantidade):
         # print(17 * "-", "RESULTADOS", 17 * "-", '\n')
         resultado = list()
         for count, j in enumerate(jogos):
-            resultado.append(f'''jogo {count + 1} : {j}
-''')
+            resultado.append(f'jogo {count + 1} : {j}\n')
+        resultado = "".join(resultado)
         return (resultado)
         # print(46 * "-")
 
 
 
+# print(sortear(2,5))
 
 

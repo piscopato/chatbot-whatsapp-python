@@ -4,18 +4,30 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+from selenium.webdriver import ActionChains
 from chatgptfinal import *
 import clima
 import lotobot
 from pynput.keyboard import Key, Controller
 import os
+from selenium.webdriver.chrome.options import Options
+import conselhos
+import youtube as yt
 
 
-drive = webdriver.Chrome()
+chrome_options = Options()
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+
+# Adiciona a opção de download
+prefs = {"download.prompt_for_download": True}
+chrome_options.add_experimental_option("prefs", prefs)
+
+drive = webdriver.Chrome(options=chrome_options)
 drive.get('https://web.whatsapp.com/')
 texto = 'vazio'
 num_imagem = 0
+video_yt = 0
 
 # seletores e classes:
 ler = '.ggj6brxn.gfz4du6o.r7fjleex.g0rxnol2.lhj4utae.le5p0ye3.l7jjieqr._11JPr'
@@ -36,6 +48,9 @@ ajuda = '''Menu de ajuda do chatbot:
 !loto Escolha APENAS 1 (LOTOFÁCIL) OU 2(MEGASENA) / Quantidade de jogos (exemplo !loto 5 2) - sorteios números para sua aposta
 !discord - informo meu discord oficial 
 !sticker - transforma *IMAGENS* em figurinhas
+!mp4 link - baixa qualquer video do youtube na maior qualidade
+!mp3 link - baixa somente o audio de qualquer video do youtube
+!conselho - te da um conselho aleatório
 
 E é só isso mesmo que eu faço'''
 
@@ -44,25 +59,34 @@ input("Pressione enter após a leitura do Qr code ")
 
 
 # cria uma pasta para salvas as imagens que serão usadas para salvar as figurinhas
-def criar_pasta():
-    def criar_pasta():
-        try:
-            diretorio_atual = os.getcwd()
-            path = os.path.join(diretorio_atual, 'imagens para fig')
-            os.mkdir(path)
-            print('pasta criada')
 
-        except:
-            pass
+def criar_pasta(pasta):
+    try:
+        diretorio_atual = os.getcwd()
+        path = os.path.join(diretorio_atual, pasta)
+        os.mkdir(path)
+        print('pasta criada')
+
+    except:
+        pass
 
 
 # aperta na caixa de mensagem / escreve a mensagem / envia a mensagem (parâmetro 'a' deve receber a mensagem a ser enviada)
 def caixa_de_mensagem(a):
-    digitar = WebDriverWait(drive, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, box_msg)))
-    for caixas in digitar:
-        if caixas.get_attribute("title") == "Digite uma mensagem":
-            caixas.send_keys(a)
-            caixas.send_keys(Keys.ENTER)
+    try:
+        digitar = WebDriverWait(drive, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, box_msg)))
+        for caixas in digitar:
+            if caixas.get_attribute("title") == "Digite uma mensagem":
+                lines = a.split('\n')
+                for line in lines:
+                    caixas.send_keys(line)
+                    ActionChains(drive).key_down(Keys.SHIFT).key_down(Keys.ENTER).key_up(Keys.SHIFT).key_up(
+                        Keys.ENTER).perform()
+                    time.sleep(0.1)
+
+                caixas.send_keys(Keys.ENTER)
+    except Exception as es:
+        print('erro ao enviar', es)
     # confirmar = WebDriverWait(drive, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, enviar)))
     # confirmar.click()
 
@@ -76,6 +100,9 @@ def abrir_conversa(e):
         except:
             continue
 
+
+criar_pasta('imagens para fig')
+criar_pasta('videos')
 
 
 
@@ -137,13 +164,86 @@ while True:
                         print(texto[8])
                         if texto[6].isnumeric():
                             if texto[8].isnumeric():
-                                caixa_de_mensagem(lotobot.sortear(int(texto[6]), int(texto[8])))
+                                sorteio = lotobot.sortear(int(texto[6]), int(texto[8]))
+                                print(sorteio)
+                                caixa_de_mensagem(sorteio)
                             else:
                                 caixa_de_mensagem('Escreva conforme exemplo: !loto 5 2) Usando somente números')
                         else:
                             caixa_de_mensagem('Escreva conforme exemplo: !loto 6 2) Usando somente números')
                     else:
                         caixa_de_mensagem('Escreva conforme exemplo: !loto 7 2) Usando somente números')
+
+
+                elif texto[0:9] == '!conselho':
+                    print(texto)
+                    abrir_conversa(e)
+                    caixa_de_mensagem(conselhos.conselho())
+
+
+                elif texto[0:5] == '!mp4 ':
+                    abrir_conversa(e)
+                    pasta = 'D:\\novochatbot\\videos'
+                    nome_mp4 = f'video_yt{video_yt}.mp4'
+
+                    yt.baixar_mp4(texto[5:], pasta, nome_mp4)
+
+                    seletor = WebDriverWait(drive, 10).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, menugeral)))
+                    seletor.click()  # abre o menu de envio de arquivos da conversa
+                    time.sleep(1)
+                    opcao_do_seletor = WebDriverWait(drive, 10).until(
+                        EC.presence_of_all_elements_located((By.CSS_SELECTOR,
+                                                             itens_do_menu)))  # retorna uma lista com todas os itens do menu de envio de arquivos na conversa
+
+                    if os.path.getsize(f"D:\\novochatbot\\videos\\video_yt{video_yt}.mp4") > 67108864:
+                        opcao = opcao_do_seletor[1]  # vai para o último item da lista que é o item para gerar figurinhas
+                    else:
+                        opcao = opcao_do_seletor[2]
+                    opcao.click()
+                    time.sleep(1.5)
+                    keyboard = Controller()
+                    keyboard.type(f"D:\\novochatbot\\videos\\video_yt{video_yt}.mp4")  # abre o local com nome onde foi salva a imagem
+                    time.sleep(1.5)
+                    keyboard.press(Key.enter)
+                    keyboard.release(Key.enter)
+                    time.sleep(10)
+                    keyboard.press(Key.enter)
+                    keyboard.release(Key.enter)  # envia a figurinha
+                    video_yt += 1
+
+
+                elif texto[0:5] == '!mp3 ':
+                    abrir_conversa(e)
+                    pasta = 'D:\\novochatbot\\videos'
+                    musica = yt.baixar_mp3(texto[5:], pasta)
+
+                    seletor = WebDriverWait(drive, 10).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, menugeral)))
+                    seletor.click()  # abre o menu de envio de arquivos da conversa
+                    time.sleep(1)
+                    opcao_do_seletor = WebDriverWait(drive, 10).until(
+                        EC.presence_of_all_elements_located((By.CSS_SELECTOR,
+                                                             itens_do_menu)))  # retorna uma lista com todas os itens do menu de envio de arquivos na conversa
+
+                    if os.path.getsize(f"D:\\novochatbot\\videos\\{musica}") > 67108864:
+                        opcao = opcao_do_seletor[
+                            1]  # vai para o último item da lista que é o item para gerar figurinhas
+                    else:
+                        opcao = opcao_do_seletor[2]
+                    opcao.click()
+                    time.sleep(1.5)
+                    keyboard = Controller()
+                    keyboard.type(
+                        f"D:\\novochatbot\\videos\\{musica}")  # abre o local com nome onde foi salva a imagem
+                    time.sleep(1.5)
+                    keyboard.press(Key.enter)
+                    keyboard.release(Key.enter)
+                    time.sleep(10)
+                    keyboard.press(Key.enter)
+                    keyboard.release(Key.enter)  # envia a figurinha
+                    video_yt += 1
+
 
                 # transforma imagens em figurinhas
                 elif texto[0:8] == '!sticker':
@@ -207,8 +307,8 @@ while True:
                     except:
                         print('não foi possível obter')
 
-            except StaleElementReferenceException:
+            except:
                 continue
-    except NoSuchElementException:
+    except:
         print("Elemento não encontrado. Continuando...")
         continue
