@@ -2,15 +2,18 @@ from pytube import YouTube
 import os
 import re
 
+
 def baixar_mp4(link, pasta, nome):
     try:
         video = YouTube(link)
         stream = video.streams.get_highest_resolution()
         stream.download(output_path=pasta, filename=nome)
+        name_video = re.sub(r'[\\/*?:"<>|]', "", video.title)
 
         print('download completo')
-    except:
-        print('erro ao baixar')
+        return name_video
+    except Exception as e:
+        print(f'erro ao baixar{e}')
 
 
 def baixar_mp3(link, pasta):

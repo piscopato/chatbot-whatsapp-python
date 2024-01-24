@@ -1,18 +1,18 @@
 import openai
 from datetime import datetime
 
-<<<<<<< HEAD
-openai.api_key = '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'  # informe sua key de api do chatgpt
-=======
-openai.api_key = ''  # informe sua key de api do chatgpt
->>>>>>> origin/main
+
+
+
+# openai.api_key = ''  # informe sua key de api do chatgpt
+
 
 
 def gerar_resposta(question):
     data_e_hora_atuais = datetime.now()
     data_e_hora_em_texto = data_e_hora_atuais.strftime("%d/%m/%Y %H:%M'")
     mensagens = [{"role": "system", "content": "Você é um assistente gente boa."}]
-    mensagens.append({"role": "user", "content": str(f'{question} , hoje é dia {data_e_hora_em_texto} Não informar isso na mensagem de resposta')})
+    mensagens.append({"role": "user", "content": str(f'{question}')})
 
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo-1106",
@@ -26,3 +26,6 @@ def gerar_resposta(question):
 # answer = gerar_resposta(question)
 # print("User:", question)
 # print("ChatGPT:", answer)
+
+
+print(gerar_resposta('que dia é hoje?'))
