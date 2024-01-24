@@ -5,6 +5,9 @@ Antes de iniciar é necessário baixar :
 2- webdriver
 3- lib openai
 4- pynput
+5- deep_translator 
+6- BeautifulSoup
+7- pytube 
 
 APIs usadas:
 https://platform.openai.com/apps
