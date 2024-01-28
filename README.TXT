@@ -8,6 +8,7 @@ Antes de iniciar é necessário baixar :
 5- deep_translator 
 6- BeautifulSoup
 7- pytube 
+8- Pillow
 
 APIs usadas:
 https://platform.openai.com/apps
